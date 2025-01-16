@@ -1,0 +1,24 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+manifests:
+  rawYaml:
+    # when skaffold starts up, apply the files
+    # when we make changes, apply files
+    # when we stop skafffold, delete all objects in the cluster which are defined in the files
+    - ./infra/k8s/*
+build:
+  local:
+    push: false
+  # googleCloudBuild:
+  #  projectId: sonic-airfoil-447921-p3
+  artifacts:
+    - image: rkhaskin/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # if js file changes, it will copy the file directly into the pod (dest .)
+          # if the chamge is made to a not js file (as per below rule), skaffold will rebuild the entire image and update the deployment tied to the image
+          - src: "src/**/*.ts"
+            dest: .

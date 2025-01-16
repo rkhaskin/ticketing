@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  # ingress controller will scan objects looking for this tag. It tells ingress that what follows are the setup rules
+  ingressClassName: nginx
+  # teach ingress controller how to take incoming traffic and route to different pods
+  rules:
+    # this config is tied to an app hosted at posts.com. Use etc/hosts to configure
+    # ports.com/ports -> this ingress controller -> posts-clusterip-srv -> pod
+    - host: ticketing.dev
+      http:
+        paths:
+          # first routing rule which has a path of /posts will go to posts microservice (thru clusterip service)
+          - path: /api/users/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: auth-srv
+                port:
+                  # port on which posts clusterip service listens
+                  number: 3000
