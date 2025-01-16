@@ -7,12 +7,12 @@ manifests:
     # when we stop skafffold, delete all objects in the cluster which are defined in the files
     - ./infra/k8s/*
 build:
-  local:
-    push: false
-  # googleCloudBuild:
-  #  projectId: sonic-airfoil-447921-p3
+  #local:
+  #  push: false
+  googleCloudBuild:
+    projectId: sonic-airfoil-447921-p3
   artifacts:
-    - image: rkhaskin/auth
+    - image: us.gcr.io/sonic-airfoil-447921-p3/auth
       context: auth
       docker:
         dockerfile: Dockerfile

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rkhaskin/auth
+          image: us.gcr.io/sonic-airfoil-447921-p3/auth
 ---
 apiVersion: v1
 kind: Service
