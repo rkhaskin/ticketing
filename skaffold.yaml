@@ -4,7 +4,7 @@ manifests:
   rawYaml:
     # when skaffold starts up, apply the files
     # when we make changes, apply files
-    # when we stop skafffold, delete all objects in the cluster which are defined in the files
+    # when we stop skaffold, delete all objects in the cluster which are defined in the files
     - ./infra/k8s/*
 build:
   #local:
