@@ -1,7 +1,20 @@
 import mongoose from "mongoose";
 
+import { Password } from "../services/password";
+
 // an interface which describes properties for a new User
 interface UserAttrs {
+  email: string;
+  password: string;
+}
+
+// an interface that describes properties of a User Model. Returns a User Doc
+interface UserModel extends mongoose.Model<UserDoc> {
+  build(attrs: UserAttrs): UserDoc;
+}
+
+// an interface which describes properties of a User Document
+interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
 }
@@ -18,18 +31,26 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// define a DAO object. All communication with dn will be done through this object
-const User = mongoose.model("User", userSchema);
+userSchema.pre("save", async function (done) {
+  if (this.isModified("password")) {
+    const hashed = await Password.toHash(this.get("password"));
+    this.set("password", hashed);
+  }
+  done();
+});
 
-// create a new User thru this function. It will handle mongo / typestript. If call new User({email: 'e', password: 'p'}) directly, no  typescript checks will be made
-const buildUser = (attrs: UserAttrs) => {
+// add a custom method to mongo schema: add build()
+userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
 };
 
-// example: passing in an object which is defined as UserAttrs
-// buildUser({
-//   email: "k@y.com",
-//   password: "pp",
+// define a DAO object. All communication with dn will be done through this object
+const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
+
+// example:
+// User.build({
+//   email: "test@test.com",
+//   password: "",
 // });
 
-export { User, buildUser };
+export { User };
