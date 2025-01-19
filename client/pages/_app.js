@@ -2,12 +2,13 @@
 // _app.js is the only file that guarantees that the css
 import "bootstrap/dist/css/bootstrap.css";
 import buildClient from "../api/build-client";
+import Header from "../components/header";
 
 // wrapper around Component to enrich it with css
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
-      <div>Header! {currentUser?.email}</div>
+      <Header currentUser={currentUser} />
       <Component {...pageProps} />;
     </div>
   );
