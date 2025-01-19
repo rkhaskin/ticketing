@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        # define containers in a pod. Here we only have 1 container
+        - name: client
+          image: us.gcr.io/sonic-airfoil-447921-p3/client
+          # https://stackoverflow.com/questions/54698875/gcloud-kubernetes-cluster-with-1-insufficient-cpu-error
+          resources:
+            requests:
+              cpu: "50m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

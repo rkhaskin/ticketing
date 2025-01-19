@@ -15,6 +15,10 @@ spec:
       containers:
         - name: auth
           image: us.gcr.io/sonic-airfoil-447921-p3/auth
+          # for gcp
+          resources:
+            requests:
+              cpu: "50m"
           # provide environment variables which will be accessible inside the container
           env:
             - name: JWT_KEY
