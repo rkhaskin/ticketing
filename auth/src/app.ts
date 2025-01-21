@@ -26,6 +26,7 @@ app.use(
   })
 );
 
+// routes handled by express
 app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);

@@ -2,18 +2,18 @@ import mongoose from "mongoose";
 
 import { Password } from "../services/password";
 
-// an interface which describes properties for a new User
+// an interface which describes properties of an instance of a new User which we want to send to the db. (UserDetail)
 interface UserAttrs {
   email: string;
   password: string;
 }
 
-// an interface that describes properties of a User Model. Returns a User Doc
+// an interface that describes properties of a User Model. Model represents the entire collection of data
 interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc;
 }
 
-// an interface which describes properties of a User Document
+// an interface which describes properties of a saved record. Document represents a single record
 interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
@@ -51,12 +51,13 @@ userSchema.pre("save", async function (done) {
   done();
 });
 
-// add a custom method to mongo schema: add build()
+// add a custom method to mongo schema: add build() to do a typescript validation on properties we use to create a new record
+// if a just do new User(), there will be no type checking
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
 };
 
-// define a DAO object. All communication with dn will be done through this object
+// define a DAO object. All communication with db will be done through this object
 const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
 
 // example:

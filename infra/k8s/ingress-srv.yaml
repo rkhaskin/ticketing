@@ -23,6 +23,14 @@ spec:
                 port:
                   # port on which posts clusterip service listens
                   number: 3000
+          - path: /api/tickets/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: tickets-srv
+                port:
+                  # port on which posts clusterip service listens
+                  number: 3000
           # catch all request path
           - path: /?(.*)
             pathType: ImplementationSpecific
