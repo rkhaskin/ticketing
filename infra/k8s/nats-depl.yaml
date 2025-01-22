@@ -44,6 +44,7 @@ spec:
       protocol: TCP
       port: 4222
       targetPort: 4222
+      # this port as for monitoring, stats
     - name: monitoring
       protocol: TCP
       port: 8222
