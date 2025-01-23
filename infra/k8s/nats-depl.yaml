@@ -15,17 +15,16 @@ spec:
       containers:
         - name: nats
           image: nats-streaming:0.17.0
-          args:
-            [
+          args: [
               "-p",
               "4222",
               "-m",
               "8222",
-              "-hbi",
+              "-hbi", # hb = 'heart beat' - how often a server will make a request to the client
               "5s",
-              "-hbt",
+              "-hbt", # how much time each client has to respond to the healthcheck call from the server
               "5s",
-              "-hbf",
+              "-hbf", # how many times the client has to fail before the server assumes that the client is dead
               "2",
               "-SD",
               "-cid",
