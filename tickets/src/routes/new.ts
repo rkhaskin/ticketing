@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@tickets_rk/common";
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -30,6 +32,21 @@ router.post(
     });
 
     const ticket = await ticketDoc.save();
+
+    /* better way would be:
+       1. wrap save data and save event into a transaction
+       2. have a scheduled job to publish events from a db and set a flag if successful
+     */
+
+    // publish the event
+    const publisher = await new TicketCreatedPublisher(
+      natsWrapper.client
+    ).publish({
+      id: ticket.id,
+      price: ticket.price,
+      title: ticket.title,
+      userId: ticket.userId,
+    });
 
     res.status(201).send(ticket);
   }

@@ -10,6 +10,10 @@ declare global {
   var generateMongooseId: () => string;
 }
 
+// filename of an object we  want to mock. When jest sees we want to mock that file,
+// it will look for the same file name in the __mock__ directory
+jest.mock("../nats-wrapper");
+
 let mongo: any;
 beforeAll(async () => {
   process.env.JWT_KEY = "asdfasdf";
@@ -19,6 +23,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   if (mongoose.connection.db) {
     const collections = await mongoose.connection.db.collections();
     for (let collection of collections) {

@@ -7,6 +7,9 @@ import {
   validateRequest,
 } from "@tickets_rk/common";
 import { Ticket } from "../models/ticket";
+import { TicketUpdatedEvent } from "@tickets_rk/common";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -41,7 +44,18 @@ router.put(
       price: req.body.price,
     });
 
+    console.log("aaaaaaaaaa");
+
     await existingTicket.save();
+    // publish the event
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: existingTicket.id,
+      price: existingTicket.price,
+      title: existingTicket.title,
+      userId: existingTicket.userId,
+    });
+
+    console.log("0000000000000");
 
     res.status(200).send({ existingTicket });
   }
