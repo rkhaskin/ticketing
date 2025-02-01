@@ -42,3 +42,13 @@ build:
           # if the chamge is made to a not js file (as per below rule), skaffold will rebuild the entire image and update the deployment tied to the image
           - src: "src/**/*.ts"
             dest: .
+    - image: us.gcr.io/sonic-airfoil-447921-p3/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # if js file changes, it will copy the file directly into the pod (dest .)
+          # if the chamge is made to a not js file (as per below rule), skaffold will rebuild the entire image and update the deployment tied to the image
+          - src: "src/**/*.ts"
+            dest: .

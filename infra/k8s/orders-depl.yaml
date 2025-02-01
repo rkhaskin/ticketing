@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          # sonic-air... is a project id on the google cloud
+          image: us.gcr.io/sonic-airfoil-447921-p3/orders
+          # for gcp
+          resources:
+            requests:
+              cpu: "50m"
+          # provide environment variables which will be accessible inside the container
+          env:
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: "ticketing"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  # client id will be the pod name
+                  fieldPath: metadata.name
+            - name: MONGO_URI
+              value: "mongodb://orders-mongo-srv:27017/orders"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-srv
+spec:
+  selector:
+    app: orders
+  ports:
+    - name: orders
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

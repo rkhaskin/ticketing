@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import {
+  BadRequestError,
   NotAuthorizedError,
   NotFoundError,
   requireAuth,
@@ -39,12 +40,15 @@ router.put(
       throw new NotAuthorizedError();
     }
 
+    // ticket is reserved wher order id is present
+    if (existingTicket.orderId) {
+      throw new BadRequestError("Cannot edit a reserved ticket");
+    }
+
     existingTicket.set({
       title: req.body.title,
       price: req.body.price,
     });
-
-    console.log("aaaaaaaaaa");
 
     await existingTicket.save();
     // publish the event
@@ -53,9 +57,8 @@ router.put(
       price: existingTicket.price,
       title: existingTicket.title,
       userId: existingTicket.userId,
+      version: existingTicket.version,
     });
-
-    console.log("0000000000000");
 
     res.status(200).send({ existingTicket });
   }

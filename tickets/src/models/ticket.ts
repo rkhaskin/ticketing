@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface TicketAttrs {
   title: string;
@@ -10,6 +11,10 @@ interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;
+  orderId?: string;
+
+  // define new version field
+  version: number;
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -30,6 +35,10 @@ const ticketsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    orderId: {
+      type: String,
+      required: false,
+    },
   },
   {
     toJSON: {
@@ -40,6 +49,11 @@ const ticketsSchema = new mongoose.Schema(
     },
   }
 );
+
+// rename mongoose default column for version, which id "__v" to "__version"
+ticketsSchema.set("versionKey", "version");
+// mongoose will handle version column update automatically
+ticketsSchema.plugin(updateIfCurrentPlugin);
 
 ticketsSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket(attrs);

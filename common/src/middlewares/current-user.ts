@@ -30,7 +30,7 @@ export const currentUser = (
     }
   }
 
-  // the jwt is present. validate if it has been tempered with
+  // the jwt is present. validate if it has been tempered with. If the jwt is fine, extract user info and save it in the req.currentUser
   try {
     const payload = jwt.verify(
       req.session.jwt,
