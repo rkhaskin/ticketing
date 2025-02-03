@@ -1,24 +1,8 @@
-import mongoose from "mongoose";
-
-import { app } from "./app";
-
 import { natsWrapper } from "./nats-wrapper";
-
-import { TicketCreatedListener } from "./listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./listeners/expiration-complete-listener";
+import { OrderCreatedListener } from "../events/listeners/order-created-listener";
 
 // initialize start up
 const start = async () => {
-  // check that all requires env vars are set
-  if (!process.env.JWT_KEY) {
-    throw new Error("JWT key is not defined");
-  }
-
-  if (!process.env.MONGO_URI) {
-    throw new Error("Mongo URL is not defined");
-  }
-
   if (!process.env.NATS_CLUSTER_ID) {
     throw new Error("NATS cluster id is not defined");
   }
@@ -54,19 +38,10 @@ const start = async () => {
       natsWrapper.client.close();
     });
 
-    new TicketCreatedListener(natsWrapper.client).listen();
-    new TicketUpdatedListener(natsWrapper.client).listen();
-    new ExpirationCompleteListener(natsWrapper.client).listen();
-
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("connected to tickets mongodb");
+    new OrderCreatedListener(natsWrapper.client).listen();
   } catch (err) {
     console.log(err);
   }
 };
 
 start();
-
-app.listen(3000, () => {
-  console.log("Listening on port 3000!!!!!");
-});

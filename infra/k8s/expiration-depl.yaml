@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: us.gcr.io/sonic-airfoil-447921-p3/expiration
+          # for gcp
+          resources:
+            requests:
+              cpu: "50m"
+          # provide environment variables which will be accessible inside the container
+          env:
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: "ticketing"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  # client id will be the pod name
+                  fieldPath: metadata.name
+            - name: REDIS_HOST
+              value: expiration-redis-srv
+# no need to specify service as there will be no communitaion from other services. The only communication is through nats

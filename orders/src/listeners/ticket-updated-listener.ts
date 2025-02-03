@@ -17,7 +17,6 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     msg: Message
   ): Promise<void> {
     // find a ticket
-    console.log("aaaaaaa", data);
     const ticket = await Ticket.findByEvent(data);
 
     if (!ticket) {
