@@ -3,11 +3,8 @@ import mongoose from "mongoose";
 import { app } from "./app";
 
 import { natsWrapper } from "./nats-wrapper";
-
-import { TicketCreatedListener } from "./listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./listeners/expiration-complete-listener";
-import { PaymentCreatedListener } from "./listeners/payment-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
+import { OrderCreatedListener } from "./events/listeners/order-creates-listener";
 
 // initialize start up
 const start = async () => {
@@ -30,6 +27,10 @@ const start = async () => {
 
   if (!process.env.NATS_URL) {
     throw new Error("NATS URL is not defined");
+  }
+
+  if (!process.env.STRIPE_KEY) {
+    throw new Error("Stripe key is not defined");
   }
 
   try {
@@ -55,10 +56,8 @@ const start = async () => {
       natsWrapper.client.close();
     });
 
-    new TicketCreatedListener(natsWrapper.client).listen();
-    new TicketUpdatedListener(natsWrapper.client).listen();
-    new ExpirationCompleteListener(natsWrapper.client).listen();
-    new PaymentCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
+    new OrderCreatedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("connected to tickets mongodb");

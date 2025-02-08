@@ -65,14 +65,6 @@ it("publishes a ticket updated event", async () => {
   const { listener, ticket, data, msg } = await setup();
   await listener.onMessage(data, msg);
 
-  /* accessing details on a mock object*/
-  // @ts-ignore
-  console.log(natsWrapper.client.publish.mock.calls);
-
-  // @ts-ignore
-  console.log(natsWrapper.client.publish.mock.calls[0]);
-  // @ts-ignore
-  console.log(natsWrapper.client.publish.mock.calls[0][1]);
   expect(natsWrapper.client.publish).toHaveBeenCalled();
 
   const ticketUpdatedData = JSON.parse(
