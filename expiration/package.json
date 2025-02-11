@@ -26,7 +26,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@tickets_rk/common": "^1.0.13",
+    "@tickets_rk/common": "^1.0.14",
     "@types/bull": "^3.15.9",
     "bull": "^4.16.5",
     "node-nats-streaming": "^0.3.2",

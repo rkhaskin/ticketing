@@ -26,7 +26,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@tickets_rk/common": "^1.0.13",
+    "@tickets_rk/common": "^1.0.14",
     "@types/cookie-session": "^2.0.49",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",

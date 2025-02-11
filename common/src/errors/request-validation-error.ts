@@ -14,8 +14,8 @@ export class RequestValidationError extends CustomError {
   constructor(public errors: ValidationError[]) {
     super("Error");
 
-    // only because we are extending a built in class (Error)
-    //Object.setPrototypeOf(this, RequestValidationError.prototype);
+    // only because we are extending a built in class (Error). If not present, serializeErrors() will not be visible
+    Object.setPrototypeOf(this, RequestValidationError.prototype);
   }
 
   serializeErrors() {
